@@ -1,0 +1,134 @@
+---
+title: "Final Reflection"
+author: "Anna Repesh"
+date: "12/2/2021"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(rgdal)
+library(car)
+library(raster)
+```
+
+## Final Project
+
+https://github.com/arepesh/Final-Project
+https://github.com/arepesh/Final-Project/blob/main/Final%20Project.Rmd
+https://github.com/arepesh/Final-Project/tree/main/apps
+
+Bella and I have been working on this project together. The first link will bring you to the main GitHub page of the project. The second link brings you to the Rmd file that has everything for the graphs and charts make to display trends in the data. The third link brings you to the main page with the different apps that were made. The Shiny Final Project script file was the one that was shown in class and for some reason now decided that it doesn't want to work, and I am not sure what change from showing it in class. The second script file names Shiny App that works the best is a map of just the year 2000 for all the states. You can select different age groups which is what I was most excited for, and the labels show correctly as well. This app is the one I will be continuing to work on to figure out exactly how to make the app work. Finally, the Data Table script you can select age group and year and it will display in the data table but I change some things and now the state won’t show up so that is interesting. Overall, I am proud of this project. Everything might not work exactly how I want it to, but I pushed myself and I am amazed at how much I have been able to learn. I do plan to keep working on this to get everything to work in the future. 
+
+## Reflection Letter
+For most of this refection I will be using the same data set that is being used in the final project. At this point I have done the most work with this data and I feel the most confident about what I am able to accomplish with this data. I might also be pulling data and code from another project I am working on in STA610 because I am not able to show everything that I would like to from just the final project in this class.
+
+- Import, manage, and clean data
+
+Importing data has been one of the easiest and hardest things to do in this class. For a normal csv file, I have had no problems getting data loaded into R but when it comes to any other file it has been a challenge. For the final project I needed to get a shape file so I could map the states onto a leaflet map which came in a zip file. It honestly took me an hour to figure out how to get the zip file loaded and opened. I did a lot of Goggling and the only I could get it to open was to use the file.choose command originally. I then found the shapefile command in the raster package and was able to use the here::here command in order to get the file to open more efficiently with less steps. I have included the files in the Repo so that it can be downloaded and chosen as well. I feel like I have met the importing data section because I have figured out how to load in more than one type of files. 
+
+```{r load data, Message = FALSE}
+birth <- read_csv("NationalAndStatePregnancy_PublicUse.csv")
+
+state <- shapefile(here::here("cb_2019_us_state_5m/cb_2019_us_state_5m.shp"))
+
+used_cars <- read_csv("used cars.csv")
+```
+
+Managing and cleaning data I tend to like to do together because I think it looks nicer that way, I'm a little OCD so I like to have just the information I will be using to do something in the data I am working with. However, I like to keep how I have changed data stored under different names because then if I need to go back to the original data I can with no hassle. So, for this data set there were 103 variables and we only needed 6 of them. So, I went created a second data set named birht2 because it was from the original birth data, but it was the second version of this. This way I need to get information from the first data set I can still go back to it. We also only wanted a select number of years because we weren't not interested in the years before 2000. So, all in one I was able to select the data that I wanted and filter it to show me only the years I want as well. Another reason I do this is because I don't like writing extra steps when making graphs of charts because that is a lot of writing the same code repeatedly and I lazy sometimes. It is much easier to have a data set already created with the information I want. Something else that was done to help make the data easier to work with was pivot the data so that we had all the age groups in one column and the pregnancy rate in another. This make it easier when making graphs when grouping was needed.
+
+```{r}
+birth2 <- birth %>%
+  select("state", "year", "pregnancyrate2024" : "pregnancyrate3539") %>%
+  filter(year >= 2000, state != "US" & state != "DC") 
+
+Pivot_Birth <- birth2 %>%
+  pivot_longer(!state:year, names_to = "Group", values_to = "Rate")
+
+used_cars2 <- used_cars %>%
+  select(Price, Make2)
+```
+
+- Creating graphical displays and numerical summaries of data for exploratory analysis and presentations 
+
+For this section I will be showing the graphical displays and analysis from the project from STA 610. I would show the graphs from the final project for this class but Bella did most of those graphs so that wouldn't be and accurate representation of what I am able to do. For the STA610 project we were doing a one-way ANOVA test and I wanted the output that would be given in SAS to be the same in R. Now one nice thing about SAS is that all this would have been given all together in one output so, but R is better because I can make the graphs prettier which is more important to me. So, I was able to get the descriptive statistics that I wanted which were the mean price and the inter quartile range. I was also able to make box plots to visualize the descriptive statistics. I also found the facet wrap to be helpful when wanting to show several graphs next to each other. I found that to be very helpful and it was something I hadn't seen before that I learned from another classmate. For these graphs we were able to do out exploratory analysis and eventually run the ANOVA test.
+
+```{r}
+used_cars2 %>%
+  group_by(Make2) %>%
+  summarise(mean_price = mean(Price),
+            IQR_price = IQR(Price))
+#Box plots
+used_cars2 %>%
+  ggplot(aes(Make2, Price, fill = Make2)) +
+    geom_boxplot()
+    
+#Histograms
+ggplot(used_cars2, aes(x = Price)) +
+  geom_histogram(fill = "white", colour = "black") +
+  facet_wrap( ~ Make2, ncol = 2)
+
+#Q-Q plots 
+used_cars2 %>% 
+  ggplot() +
+  geom_qq(mapping = aes(sample = Price)) +
+  geom_qq_line(mapping = aes(sample = Price)) +
+  facet_wrap(vars(Make2),nrow = 3)
+```
+
+- Writing R programs for simulation from probability models and randomization-based experiments
+
+For this learning objective I chose to write a function that would roll a die however many times you wanted it to. I did this because I have heard of other people using this in experiments, but I have never actually done it myself and R can roll a die fast than I ever will which could be helpful in the future. In this I chose to just have it roll 100 times for each of the examples, but it can be changed to whatever number is desired. I then summed the rolls so I could see how what number the rolls tended to be around. I then put this function into a for loop so that I could have this repeated 10000 times and get the sums for each for loop. I then took these numbers and put them in a histogram so that I could see if the rolls were normally distributed or not (they should be normally distributed if the die is fair which it should be in this experiment). I did find that we had a normal distribution of the sums of the rolls. The sum of rolls looked to be centered around 350 which was interesting. So, with the center being around 350 I wanted to see what the likely hood of the sums of the 100 rolls were of being less than 300 and greater than 400. So, I found all the rolls that were less than 300 and counted how many were less than 300 which in this case was 17. So, there is a 0.17% chance of the 100 rolls being less than 300. I repeated this to find the sum of the rolls being greater than 400. For this experiment there were 14 rolls greater than 400 so the probability of the sum of the 100 rolls being greater than 400 is 0.14%. I found this little experiment to be interesting and would like to learn more complex experiments in the future. 
+
+```{r}
+#getting dice to roll 100 times
+sample(1:6, 100, replace = TRUE)
+
+#function so I can choose how many times the dice rolls
+rolldie = function(n) sample(1:6, n, replace = TRUE)
+rolldie(100)
+
+#get the sum of the rolls
+sum(rolldie(100))
+
+#for loop to roll the die 10000 times
+sums = numeric()
+
+for (i in 1:10000) {
+  sums = c(sums, sum(rolldie(100)))
+}
+sums[1:40]
+
+#making a histogram of the sums of the 1000 rolls
+hist(sums, breaks = 100)
+
+#finding probability of the sums being less than 300
+sums[sums < 300]
+
+length(sums[sums < 300])
+
+17/10000
+
+#finding probability of the sums being greater than 400
+sums[sums > 400]
+
+length(sums[sums > 400])
+
+14/10000
+```
+
+
+- Using source documentation and other resourced to troubleshoot and extend R programs. 
+
+Google has been my best friend in this class. Expectantly throughout the final project. While going thought the process of trying to use leaflet and shiny I have learned a lot from the Shiny app gallery and other people on the internet that have gotten the same errors as I have. That is the one nice thing about R is most likely someone has run into the same problems that you have. I have used a bunch of different discussion board pages where people have put in their code to see if someone else would be able to look at it and find the mistake. A lot of the time I have the same exact error they do and can look in the comments to see what others have suggested to fix the error. It is super rare that no one has tried what you are doing before. So, I am very grateful for everyone that has struggled before me so that I can learn from their mistakes as well. I also feel that getting errors also helps to get a better understanding of how code should be written. I have extended my knowledge of R extensively while trouble shooting and now have a much better understanding of what needs to be included in specific commands for them to run more smoothly. 
+
+- Write clear, efficient, and well-documented R programs
+
+https://github.com/arepesh/Final-Project/blob/main/Map%20for%20one%20year%20and%20age%20group.R
+
+For writing clear, efficient, and well-documented R programs I have add the link above that goes to an R Script for a part of the project that I was able to have working completely exactly how I wanted it to. To write this I had followed step by step with another person’s project to figure out what each step did. After getting theirs to work fully I moved on to writing my own version of it with my data. The original version of this was very messy and there was a lot of code that still didn't work or was unnecessary for my project. So, this final version is the clean code that only contains what I did and what was needed. I was also proud of myself for adding comments about what each part did. I am not the best at this a future me hates past me for it because then I have to take time going back through the code to figure out what in the world I was doing. I think this is the best example for this objective because it is the cleanest and works fully. 
+
+## Grade and Other Thoughts
+
+I would give myself and A in this class. If I look back to what I was able to do at the beginning of the semester vs now I am amazed at what I have accomplished. I am much more confident in what I can do in R now vs the beginning of the semester. I also really appreciate the fact that we have been given room to fail in this class. Knowing that I haven't been solely focused on getting a specific grade I know I have pushed myself to try and make the shiny app. I know I would have never tried to take on such a task if I was so focused on the grade and by pushing myself, I have expanded my knowledge so much more. Even though I have yet to get my Shiny app working exactly how I want to I am still proud of the progress that I did make. I do plan to keep working through the bugs to get the app working exactly how I want to so that I can publish it on Shiny so hopefully that can be there in the future. I also do have plans for other things I would like to try. I am excited to continue using R in the future whether it is through work or just for my own enjoyment.
