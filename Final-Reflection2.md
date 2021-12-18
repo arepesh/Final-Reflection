@@ -77,7 +77,7 @@ with. However, I like to keep how I have changed data stored under
 different names because then if I need to go back to the original data I
 can with no hassle. So, for this data set there were 103 variables and
 we only needed 6 of them. So, I went created a second data set named
-birht2 because it was from the original birth data, but it was the
+birth2 because it was from the original birth data, but it was the
 second version of this. This way I need to get information from the
 first data set I can still go back to it. We also only wanted a select
 number of years because we weren’t not interested in the years before
@@ -237,9 +237,9 @@ experiments in the future.
 sample(1:6, 100, replace = TRUE)
 ```
 
-    ##   [1] 5 6 4 3 4 3 1 4 4 6 1 1 2 6 1 3 6 4 2 4 1 3 3 3 6 5 4 6 3 3 6 3 4 4 1 5 2
-    ##  [38] 2 6 2 5 5 5 6 3 5 4 5 5 4 5 2 2 3 2 2 5 4 2 5 6 3 3 4 6 4 5 3 1 1 4 5 6 3
-    ##  [75] 1 4 2 1 4 1 2 2 2 4 5 3 6 2 3 4 1 1 2 2 6 1 3 6 6 3
+    ##   [1] 6 4 5 1 2 2 2 2 3 2 6 6 3 3 3 6 6 3 1 1 1 1 6 5 5 4 1 1 4 3 4 2 2 3 3 5 3
+    ##  [38] 3 2 3 3 6 5 2 5 6 1 4 2 3 5 4 1 5 2 5 3 5 5 4 1 3 3 4 3 5 5 5 3 3 1 4 2 2
+    ##  [75] 2 2 3 6 1 2 3 2 2 5 2 4 2 3 4 6 6 1 1 3 3 4 6 3 1 1
 
 ``` r
 #function so I can choose how many times the dice rolls
@@ -247,16 +247,16 @@ rolldie = function(n) sample(1:6, n, replace = TRUE)
 rolldie(100)
 ```
 
-    ##   [1] 3 3 6 6 5 2 6 3 4 3 3 1 5 4 2 4 5 4 6 5 6 6 3 4 5 6 2 3 1 3 2 6 2 2 4 2 1
-    ##  [38] 4 4 4 6 1 4 2 5 1 3 5 2 6 6 4 6 2 1 5 1 5 1 6 1 2 4 2 3 4 3 6 5 2 5 2 6 4
-    ##  [75] 1 4 1 5 1 6 6 6 4 6 4 1 6 5 4 1 1 6 6 3 4 5 1 4 2 3
+    ##   [1] 2 5 3 6 3 1 6 3 3 2 3 4 6 3 2 4 2 4 2 1 3 2 1 3 6 3 6 5 1 3 3 6 5 1 2 2 5
+    ##  [38] 5 4 3 2 4 3 4 2 2 3 6 3 2 5 4 1 4 6 2 3 1 3 3 2 4 4 5 2 4 3 3 5 2 4 1 3 5
+    ##  [75] 3 2 2 3 4 4 4 4 2 4 4 1 2 3 4 1 1 4 4 2 1 4 4 5 6 3
 
 ``` r
 #get the sum of the rolls
 sum(rolldie(100))
 ```
 
-    ## [1] 355
+    ## [1] 344
 
 ``` r
 #for loop to roll the die 10000 times
@@ -268,9 +268,9 @@ for (i in 1:10000) {
 sums[1:40]
 ```
 
-    ##  [1] 353 329 383 329 343 345 342 362 366 376 358 356 348 348 357 355 304 386 361
-    ## [20] 345 349 346 369 343 349 358 346 330 354 321 347 347 309 348 361 360 325 325
-    ## [39] 356 343
+    ##  [1] 346 367 330 348 369 332 391 336 364 323 344 318 365 346 353 345 331 370 321
+    ## [20] 372 349 341 331 331 343 339 343 371 358 382 328 341 340 358 347 364 317 368
+    ## [39] 331 354
 
 ``` r
 #making a histogram of the sums of the 1000 rolls
@@ -284,13 +284,13 @@ hist(sums, breaks = 100)
 sums[sums < 300]
 ```
 
-    ##  [1] 293 297 296 298 280 299 293 297 299 289 299 288 297 299 292
+    ##  [1] 295 297 297 297 298 299 291 296 299 297 294 294 296 293 296 297 299
 
 ``` r
 length(sums[sums < 300])
 ```
 
-    ## [1] 15
+    ## [1] 17
 
 ``` r
 17/10000
@@ -303,13 +303,13 @@ length(sums[sums < 300])
 sums[sums > 400]
 ```
 
-    ##  [1] 405 421 404 413 405 401 411 405 408 418 401 401 403 403 405 401 403
+    ## [1] 406 402 404 404 405 403 403
 
 ``` r
 length(sums[sums > 400])
 ```
 
-    ## [1] 17
+    ## [1] 7
 
 ``` r
 14/10000
