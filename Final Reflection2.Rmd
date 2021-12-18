@@ -22,7 +22,7 @@ https://github.com/arepesh/Final-Project/tree/main/apps
 Bella and I have been working on this project together. The first link will bring you to the main GitHub page of the project. The second link brings you to the Rmd file that has everything for the graphs and charts make to display trends in the data. The third link brings you to the main page with the different apps that were made. The Shiny Final Project script file was the one that was shown in class and for some reason now decided that it doesn't want to work, and I am not sure what change from showing it in class. The second script file names Shiny App that works the best is a map of just the year 2000 for all the states. You can select different age groups which is what I was most excited for, and the labels show correctly as well. This app is the one I will be continuing to work on to figure out exactly how to make the app work. Finally, the Data Table script you can select age group and year and it will display in the data table but I change some things and now the state won’t show up so that is interesting. Overall, I am proud of this project. Everything might not work exactly how I want it to, but I pushed myself and I am amazed at how much I have been able to learn. I do plan to keep working on this to get everything to work in the future. 
 
 ## Reflection Letter
-For most of this refection I will be using the same data set that is being used in the final project. At this point I have done the most work with this data and I feel the most confident about what I am able to accomplish with this data. I might also be pulling data and code from another project I am working on in STA610 because I am not able to show everything that I would like to from just the final project in this class.
+For most of this refection I will be using the same data set that is being used in the final project. At this point I have done the most work with this data and I feel the most confident about what I am able to accomplish with this data.
 
 - Import, manage, and clean data
 
@@ -32,8 +32,6 @@ Importing data has been one of the easiest and hardest things to do in this clas
 birth <- read_csv("NationalAndStatePregnancy_PublicUse.csv")
 
 state <- shapefile(here::here("cb_2019_us_state_5m/cb_2019_us_state_5m.shp"))
-
-used_cars <- read_csv("used cars.csv")
 ```
 
 Managing and cleaning data I tend to like to do together because I think it looks nicer that way, I'm a little OCD so I like to have just the information I will be using to do something in the data I am working with. However, I like to keep how I have changed data stored under different names because then if I need to go back to the original data I can with no hassle. So, for this data set there were 103 variables and we only needed 6 of them. So, I went created a second data set named birht2 because it was from the original birth data, but it was the second version of this. This way I need to get information from the first data set I can still go back to it. We also only wanted a select number of years because we weren't not interested in the years before 2000. So, all in one I was able to select the data that I wanted and filter it to show me only the years I want as well. Another reason I do this is because I don't like writing extra steps when making graphs of charts because that is a lot of writing the same code repeatedly and I lazy sometimes. It is much easier to have a data set already created with the information I want. Something else that was done to help make the data easier to work with was pivot the data so that we had all the age groups in one column and the pregnancy rate in another. This make it easier when making graphs when grouping was needed.
@@ -46,35 +44,50 @@ birth2 <- birth %>%
 Pivot_Birth <- birth2 %>%
   pivot_longer(!state:year, names_to = "Group", values_to = "Rate")
 
-used_cars2 <- used_cars %>%
-  dplyr::select(Price, Make2)
+merged_birth <- merge(birth2, state, by.x = 'state', by.y = 'STUSPS', all.x = FALSE, duplicateGeom = TRUE)
+
+merged_pivotbirth <- merge(Pivot_Birth, state, by.x = "state", by.y = "STUSPS", all.x = FALSE, duplicateGeom = TRUE)
+
 ```
 
 - Creating graphical displays and numerical summaries of data for exploratory analysis and presentations 
 
-For this section I will be showing the graphical displays and analysis from the project from STA 610. I would show the graphs from the final project for this class but Bella did most of those graphs so that wouldn't be and accurate representation of what I am able to do. For the STA610 project we were doing a one-way ANOVA test and I wanted the output that would be given in SAS to be the same in R. Now one nice thing about SAS is that all this would have been given all together in one output so, but R is better because I can make the graphs prettier which is more important to me. So, I was able to get the descriptive statistics that I wanted which were the mean price and the inter quartile range. I was also able to make box plots to visualize the descriptive statistics. I also found the facet wrap to be helpful when wanting to show several graphs next to each other. I found that to be very helpful and it was something I hadn't seen before that I learned from another classmate. For these graphs we were able to do out exploratory analysis and eventually run the ANOVA test.
+For this objective I once again used the data from the final project to do some exploratory analysis and graphical displays. First, I took the merged_birth data set to find the mean, median, min, and max values for every state. I used the merged_birth data set because I can't always remember the abbreviations for all the states and by merging the birth2 data set with the state data set I am able to get the state names without having to manually enter them. Now this analysis was a little overwhelming because it is hard to sift through 50 different states to see which state has the highest average. Plus, I am a visual person and looking through giant data sets means nothing to me. I forget numbers or get distracted. So, I decided to make a box plot that shows all 50 states. Now normally I would have like to put the states variable on the y axis because the labels are easier to read. However, when I did that, it made the box plots almost overlap and it really didn't look super clean. So, I put the states on the x axis and rotated them so that they could be read easier. I would have added colors, but I knew with all the variables some of the colors would start to blend so I decided to leave that off. I also added more descriptive titles to this box plot, so you know what you are looking at as soon as you see the graph. I also wanted to look specifically at Michigan because why not it’s my home state and I thought it would be interesting to see how the different age groups compare. To make this box plot I used the merged version of the Pivot_Birth data set again so that I could use names instead of abbreviations. I then made a box plot comparing the different age groups and this time I colored them because I honestly just like colorful they are it makes it more fun to look at. I also chose to color and not fill because the fill didn't look as nice in my opinion. When I made the box the labels on the y axis were not my favorite "pregnancyrate2024" is just too long and doesn't look nice. So, I changed each of the group labels to their perspective age group so "20-24" for their age group and so on. Then because I changed the y axis age group labels, I also needed to change the legend on the side because they didn't match the y axis labels so I changed those to match the age group labels and I then chose specific colors for each of the age groups. Finally, I added labels that were more descriptive to this box plot. I believe this more accuracy shows what I have learned to meet this learning objective.
 
 ```{r}
-used_cars2 %>%
-  group_by(Make2) %>%
-  summarise(mean_price = mean(Price),
-            IQR_price = IQR(Price))
-#Box plots
-used_cars2 %>%
-  ggplot(aes(Make2, Price, fill = Make2)) +
-    geom_boxplot()
-    
-#Histograms
-ggplot(used_cars2, aes(x = Price)) +
-  geom_histogram(fill = "white", colour = "black") +
-  facet_wrap( ~ Make2, ncol = 2)
+merged_birth %>%
+  dplyr::select("NAME", "year", "pregnancyrate2024") %>%
+  group_by(NAME) %>%
+  summarise(average_rate = mean(pregnancyrate2024), 
+            median_rate = median(pregnancyrate2024),
+            min_rate = min(pregnancyrate2024),
+            max_rate = max(pregnancyrate2024))
 
-#Q-Q plots 
-used_cars2 %>% 
-  ggplot() +
-  geom_qq(mapping = aes(sample = Price)) +
-  geom_qq_line(mapping = aes(sample = Price)) +
-  facet_wrap(vars(Make2),nrow = 3)
+merged_birth %>%
+  ggplot(aes(y = pregnancyrate2024, x = NAME)) +
+  geom_boxplot(las = 2) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "State",
+       y= "Pregnancy Rate",
+       title = "Pregnancy rates by State in the United States from 2000-2017",
+       caption = "*Rates are per 1,000 women")
+
+merged_pivotbirth %>%
+  dplyr::select(NAME, Group, Rate) %>%
+  filter(NAME == "Michigan") %>%
+  ggplot(aes(x = Rate, y = Group, color = Group)) +
+  geom_boxplot() +
+  scale_y_discrete(labels=c("pregnancyrate2024" = "20-24", 
+                            "pregnancyrate2529" = "25-29",
+                            "pregnancyrate3034" = "30-34",
+                            "pregnancyrate3539" = "35-39")) +
+  scale_color_manual(labels = c("20-24", "25-29", "30-34", "35-39"), values = c("purple","blue", "yellow", "green")) +
+  guides(color=guide_legend("Age Groups")) +
+  labs(x = "Pregnancy Rate",
+       y= "Age Group",
+       title = "Pregnancy rates in Michigan by Age Group from 2000-2017",
+       caption = "*Rates are per 1,000 women")
+  
 ```
 
 - Writing R programs for simulation from probability models and randomization-based experiments

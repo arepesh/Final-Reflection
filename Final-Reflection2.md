@@ -33,10 +33,7 @@ do plan to keep working on this to get everything to work in the future.
 For most of this refection I will be using the same data set that is
 being used in the final project. At this point I have done the most work
 with this data and I feel the most confident about what I am able to
-accomplish with this data. I might also be pulling data and code from
-another project I am working on in STA610 because I am not able to show
-everything that I would like to from just the final project in this
-class.
+accomplish with this data.
 
 -   Import, manage, and clean data
 
@@ -71,20 +68,7 @@ birth <- read_csv("NationalAndStatePregnancy_PublicUse.csv")
 
 ``` r
 state <- shapefile(here::here("cb_2019_us_state_5m/cb_2019_us_state_5m.shp"))
-
-used_cars <- read_csv("used cars.csv")
 ```
-
-    ## Rows: 804 Columns: 13
-
-    ## -- Column specification --------------------------------------------------------
-    ## Delimiter: ","
-    ## chr (4): Make2, Model, Trim, Type
-    ## dbl (9): Price, Mileage, Make, Cylinder, Liter, Doors, Cruise, Sound, Leather
-
-    ## 
-    ## i Use `spec()` to retrieve the full column specification for this data.
-    ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 Managing and cleaning data I tend to like to do together because I think
 it looks nicer that way, I’m a little OCD so I like to have just the
@@ -115,77 +99,110 @@ birth2 <- birth %>%
 Pivot_Birth <- birth2 %>%
   pivot_longer(!state:year, names_to = "Group", values_to = "Rate")
 
-used_cars2 <- used_cars %>%
-  dplyr::select(Price, Make2)
+merged_birth <- merge(birth2, state, by.x = 'state', by.y = 'STUSPS', all.x = FALSE, duplicateGeom = TRUE)
+
+merged_pivotbirth <- merge(Pivot_Birth, state, by.x = "state", by.y = "STUSPS", all.x = FALSE, duplicateGeom = TRUE)
 ```
 
 -   Creating graphical displays and numerical summaries of data for
     exploratory analysis and presentations
 
-For this section I will be showing the graphical displays and analysis
-from the project from STA 610. I would show the graphs from the final
-project for this class but Bella did most of those graphs so that
-wouldn’t be and accurate representation of what I am able to do. For the
-STA610 project we were doing a one-way ANOVA test and I wanted the
-output that would be given in SAS to be the same in R. Now one nice
-thing about SAS is that all this would have been given all together in
-one output so, but R is better because I can make the graphs prettier
-which is more important to me. So, I was able to get the descriptive
-statistics that I wanted which were the mean price and the inter
-quartile range. I was also able to make box plots to visualize the
-descriptive statistics. I also found the facet wrap to be helpful when
-wanting to show several graphs next to each other. I found that to be
-very helpful and it was something I hadn’t seen before that I learned
-from another classmate. For these graphs we were able to do out
-exploratory analysis and eventually run the ANOVA test.
+For this objective I once again used the data from the final project to
+do some exploratory analysis and graphical displays. First, I took the
+merged_birth data set to find the mean, median, min, and max values for
+every state. I used the merged_birth data set because I can’t always
+remember the abbreviations for all the states and by merging the birth2
+data set with the state data set I am able to get the state names
+without having to manually enter them. Now this analysis was a little
+overwhelming because it is hard to sift through 50 different states to
+see which state has the highest average. Plus, I am a visual person and
+looking through giant data sets means nothing to me. I forget numbers or
+get distracted. So, I decided to make a box plot that shows all 50
+states. Now normally I would have like to put the states variable on the
+y axis because the labels are easier to read. However, when I did that,
+it made the box plots almost overlap and it really didn’t look super
+clean. So, I put the states on the x axis and rotated them so that they
+could be read easier. I would have added colors, but I knew with all the
+variables some of the colors would start to blend so I decided to leave
+that off. I also added more descriptive titles to this box plot, so you
+know what you are looking at as soon as you see the graph. I also wanted
+to look specifically at Michigan because why not it’s my home state and
+I thought it would be interesting to see how the different age groups
+compare. To make this box plot I used the merged version of the
+Pivot_Birth data set again so that I could use names instead of
+abbreviations. I then made a box plot comparing the different age groups
+and this time I colored them because I honestly just like colorful they
+are it makes it more fun to look at. I also chose to color and not fill
+because the fill didn’t look as nice in my opinion. When I made the box
+the labels on the y axis were not my favorite “pregnancyrate2024” is
+just too long and doesn’t look nice. So, I changed each of the group
+labels to their perspective age group so “20-24” for their age group and
+so on. Then because I changed the y axis age group labels, I also needed
+to change the legend on the side because they didn’t match the y axis
+labels so I changed those to match the age group labels and I then chose
+specific colors for each of the age groups. Finally, I added labels that
+were more descriptive to this box plot. I believe this more accuracy
+shows what I have learned to meet this learning objective.
 
 ``` r
-used_cars2 %>%
-  group_by(Make2) %>%
-  summarise(mean_price = mean(Price),
-            IQR_price = IQR(Price))
+merged_birth %>%
+  dplyr::select("NAME", "year", "pregnancyrate2024") %>%
+  group_by(NAME) %>%
+  summarise(average_rate = mean(pregnancyrate2024), 
+            median_rate = median(pregnancyrate2024),
+            min_rate = min(pregnancyrate2024),
+            max_rate = max(pregnancyrate2024))
 ```
 
-    ## # A tibble: 6 x 3
-    ##   Make2     mean_price IQR_price
-    ##   <chr>          <dbl>     <dbl>
-    ## 1 Buick         20815.     3727.
-    ## 2 Cadillac      40936.     9038.
-    ## 3 Chevrolet     16428.     5485.
-    ## 4 Pontiac       18412.     4858.
-    ## 5 SAAB          29495.     5070.
-    ## 6 Saturn        13979.     2720.
+    ## # A tibble: 50 x 5
+    ##    NAME        average_rate median_rate min_rate max_rate
+    ##    <chr>              <dbl>       <dbl>    <dbl>    <dbl>
+    ##  1 Alabama             152.        146.    133.      187.
+    ##  2 Alaska              176.        184.    135       209.
+    ##  3 Arizona             158.        147.    115.      204 
+    ##  4 Arkansas            169.        164.    143.      196.
+    ##  5 California          147.        142.    102.      203.
+    ##  6 Colorado            130.        128.     94.7     163.
+    ##  7 Connecticut         118.        119      76.7     147.
+    ##  8 Delaware            156.        159.    116.      202.
+    ##  9 Florida             155.        150.    119.      214.
+    ## 10 Georgia             161.        157.    129.      193.
+    ## # ... with 40 more rows
 
 ``` r
-#Box plots
-used_cars2 %>%
-  ggplot(aes(Make2, Price, fill = Make2)) +
-    geom_boxplot()
+merged_birth %>%
+  ggplot(aes(y = pregnancyrate2024, x = NAME)) +
+  geom_boxplot(las = 2) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "State",
+       y= "Pregnancy Rate",
+       title = "Pregnancy rates by State in the United States from 2000-2017",
+       caption = "*Rates are per 1,000 women")
 ```
+
+    ## Warning: Ignoring unknown parameters: las
 
 ![](Final-Reflection2_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 ``` r
-#Histograms
-ggplot(used_cars2, aes(x = Price)) +
-  geom_histogram(fill = "white", colour = "black") +
-  facet_wrap( ~ Make2, ncol = 2)
+merged_pivotbirth %>%
+  dplyr::select(NAME, Group, Rate) %>%
+  filter(NAME == "Michigan") %>%
+  ggplot(aes(x = Rate, y = Group, color = Group)) +
+  geom_boxplot() +
+  scale_y_discrete(labels=c("pregnancyrate2024" = "20-24", 
+                            "pregnancyrate2529" = "25-29",
+                            "pregnancyrate3034" = "30-34",
+                            "pregnancyrate3539" = "35-39")) +
+  scale_color_manual(labels = c("20-24", "25-29", "30-34", "35-39"), values = c("purple","blue", "yellow", "green")) +
+  guides(color=guide_legend("Age Groups")) +
+  labs(x = "Pregnancy Rate",
+       y= "Age Group",
+       title = "Pregnancy rates in Michigan by Age Group from 2000-2017",
+       caption = "*Rates are per 1,000 women")
 ```
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
 ![](Final-Reflection2_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
-
-``` r
-#Q-Q plots 
-used_cars2 %>% 
-  ggplot() +
-  geom_qq(mapping = aes(sample = Price)) +
-  geom_qq_line(mapping = aes(sample = Price)) +
-  facet_wrap(vars(Make2),nrow = 3)
-```
-
-![](Final-Reflection2_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
 
 -   Writing R programs for simulation from probability models and
     randomization-based experiments
@@ -220,9 +237,9 @@ experiments in the future.
 sample(1:6, 100, replace = TRUE)
 ```
 
-    ##   [1] 1 2 5 6 2 3 3 2 1 1 5 1 2 5 2 3 3 1 1 4 3 4 1 2 5 3 1 4 5 2 6 1 4 1 1 6 4
-    ##  [38] 3 3 6 6 4 5 5 2 5 3 3 3 5 4 5 4 3 2 4 2 5 6 4 1 3 1 6 4 1 1 4 6 3 1 5 2 3
-    ##  [75] 3 4 5 2 6 4 1 4 1 1 5 2 2 4 6 2 1 3 3 2 4 1 3 2 1 5
+    ##   [1] 5 6 4 3 4 3 1 4 4 6 1 1 2 6 1 3 6 4 2 4 1 3 3 3 6 5 4 6 3 3 6 3 4 4 1 5 2
+    ##  [38] 2 6 2 5 5 5 6 3 5 4 5 5 4 5 2 2 3 2 2 5 4 2 5 6 3 3 4 6 4 5 3 1 1 4 5 6 3
+    ##  [75] 1 4 2 1 4 1 2 2 2 4 5 3 6 2 3 4 1 1 2 2 6 1 3 6 6 3
 
 ``` r
 #function so I can choose how many times the dice rolls
@@ -230,16 +247,16 @@ rolldie = function(n) sample(1:6, n, replace = TRUE)
 rolldie(100)
 ```
 
-    ##   [1] 5 2 2 5 1 2 3 3 4 3 4 5 3 6 3 1 4 1 1 6 2 3 5 1 5 3 6 3 4 4 5 2 5 2 1 6 4
-    ##  [38] 6 3 6 6 6 4 1 1 6 3 2 6 4 2 1 3 5 5 3 6 3 6 1 3 6 4 5 6 2 5 3 1 3 4 5 3 5
-    ##  [75] 5 4 6 4 4 1 5 2 4 3 5 5 6 2 6 3 6 4 1 1 5 1 5 2 5 5
+    ##   [1] 3 3 6 6 5 2 6 3 4 3 3 1 5 4 2 4 5 4 6 5 6 6 3 4 5 6 2 3 1 3 2 6 2 2 4 2 1
+    ##  [38] 4 4 4 6 1 4 2 5 1 3 5 2 6 6 4 6 2 1 5 1 5 1 6 1 2 4 2 3 4 3 6 5 2 5 2 6 4
+    ##  [75] 1 4 1 5 1 6 6 6 4 6 4 1 6 5 4 1 1 6 6 3 4 5 1 4 2 3
 
 ``` r
 #get the sum of the rolls
 sum(rolldie(100))
 ```
 
-    ## [1] 316
+    ## [1] 355
 
 ``` r
 #for loop to roll the die 10000 times
@@ -251,9 +268,9 @@ for (i in 1:10000) {
 sums[1:40]
 ```
 
-    ##  [1] 353 357 328 354 382 343 382 315 353 334 323 357 360 337 339 327 330 352 357
-    ## [20] 336 360 356 358 344 376 353 340 348 371 344 333 323 352 319 368 355 337 337
-    ## [39] 335 383
+    ##  [1] 353 329 383 329 343 345 342 362 366 376 358 356 348 348 357 355 304 386 361
+    ## [20] 345 349 346 369 343 349 358 346 330 354 321 347 347 309 348 361 360 325 325
+    ## [39] 356 343
 
 ``` r
 #making a histogram of the sums of the 1000 rolls
@@ -267,13 +284,13 @@ hist(sums, breaks = 100)
 sums[sums < 300]
 ```
 
-    ##  [1] 288 297 291 296 299 298 297 261 295 295 296 279 295 296
+    ##  [1] 293 297 296 298 280 299 293 297 299 289 299 288 297 299 292
 
 ``` r
 length(sums[sums < 300])
 ```
 
-    ## [1] 14
+    ## [1] 15
 
 ``` r
 17/10000
@@ -286,13 +303,13 @@ length(sums[sums < 300])
 sums[sums > 400]
 ```
 
-    ##  [1] 406 403 403 402 402 403 417 407 403 402 402 403 406 402 406
+    ##  [1] 405 421 404 413 405 401 411 405 408 418 401 401 403 403 405 401 403
 
 ``` r
 length(sums[sums > 400])
 ```
 
-    ## [1] 15
+    ## [1] 17
 
 ``` r
 14/10000
