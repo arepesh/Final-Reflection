@@ -108,26 +108,29 @@ merged_pivotbirth <- merge(Pivot_Birth, state, by.x = "state", by.y = "STUSPS", 
     exploratory analysis and presentations
 
 For this objective I once again used the data from the final project to
-do some exploratory analysis and graphical displays. First, I took the
-merged_birth data set to find the mean, median, min, and max values for
-every state. I used the merged_birth data set because I can’t always
-remember the abbreviations for all the states and by merging the birth2
-data set with the state data set I am able to get the state names
-without having to manually enter them. Now this analysis was a little
-overwhelming because it is hard to sift through 50 different states to
-see which state has the highest average. Plus, I am a visual person and
-looking through giant data sets means nothing to me. I forget numbers or
-get distracted. So, I decided to make a box plot that shows all 50
-states. Now normally I would have like to put the states variable on the
-y axis because the labels are easier to read. However, when I did that,
-it made the box plots almost overlap and it really didn’t look super
-clean. So, I put the states on the x axis and rotated them so that they
-could be read easier. I would have added colors, but I knew with all the
-variables some of the colors would start to blend so I decided to leave
-that off. I also added more descriptive titles to this box plot, so you
-know what you are looking at as soon as you see the graph. I also wanted
-to look specifically at Michigan because why not it’s my home state and
-I thought it would be interesting to see how the different age groups
+do some exploratory analysis and graphical displays. I chose to make
+different example than the ones used in the final project because Bella
+was the one that created those so that would not represent what I have
+learned to meet this objective. First, I took the merged_birth data set
+to find the mean, median, min, and max values for every state. I used
+the merged_birth data set because I can’t always remember the
+abbreviations for all the states and by merging the birth2 data set with
+the state data set I am able to get the state names without having to
+manually enter them. Now this analysis was a little overwhelming because
+it is hard to sift through 50 different states to see which state has
+the highest average. Plus, I am a visual person and looking through
+giant data sets means nothing to me. I forget numbers or get distracted.
+So, I decided to make a box plot that shows all 50 states. Now normally
+I would have like to put the states variable on the y axis because the
+labels are easier to read. However, when I did that, it made the box
+plots almost overlap and it really didn’t look super clean. So, I put
+the states on the x axis and rotated them so that they could be read
+easier. I would have added colors, but I knew with all the variables
+some of the colors would start to blend so I decided to leave that off.
+I also added more descriptive titles to this box plot, so you know what
+you are looking at as soon as you see the graph. I also wanted to look
+specifically at Michigan because why not it’s my home state and I
+thought it would be interesting to see how the different age groups
 compare. To make this box plot I used the merged version of the
 Pivot_Birth data set again so that I could use names instead of
 abbreviations. I then made a box plot comparing the different age groups
@@ -237,9 +240,9 @@ experiments in the future.
 sample(1:6, 100, replace = TRUE)
 ```
 
-    ##   [1] 6 4 5 1 2 2 2 2 3 2 6 6 3 3 3 6 6 3 1 1 1 1 6 5 5 4 1 1 4 3 4 2 2 3 3 5 3
-    ##  [38] 3 2 3 3 6 5 2 5 6 1 4 2 3 5 4 1 5 2 5 3 5 5 4 1 3 3 4 3 5 5 5 3 3 1 4 2 2
-    ##  [75] 2 2 3 6 1 2 3 2 2 5 2 4 2 3 4 6 6 1 1 3 3 4 6 3 1 1
+    ##   [1] 6 5 5 3 6 3 3 5 5 2 5 3 4 1 6 4 5 4 4 5 1 6 4 3 5 5 3 6 3 4 1 2 1 1 2 1 3
+    ##  [38] 3 6 3 6 4 3 5 2 2 3 5 1 1 2 5 3 2 3 4 5 5 1 5 3 2 4 4 3 6 5 3 2 4 6 2 2 2
+    ##  [75] 2 4 4 3 6 6 6 6 4 1 5 4 1 4 3 2 5 1 4 3 6 4 4 2 6 1
 
 ``` r
 #function so I can choose how many times the dice rolls
@@ -247,16 +250,16 @@ rolldie = function(n) sample(1:6, n, replace = TRUE)
 rolldie(100)
 ```
 
-    ##   [1] 2 5 3 6 3 1 6 3 3 2 3 4 6 3 2 4 2 4 2 1 3 2 1 3 6 3 6 5 1 3 3 6 5 1 2 2 5
-    ##  [38] 5 4 3 2 4 3 4 2 2 3 6 3 2 5 4 1 4 6 2 3 1 3 3 2 4 4 5 2 4 3 3 5 2 4 1 3 5
-    ##  [75] 3 2 2 3 4 4 4 4 2 4 4 1 2 3 4 1 1 4 4 2 1 4 4 5 6 3
+    ##   [1] 5 3 4 4 2 1 4 2 2 5 2 5 5 6 5 6 2 1 6 5 1 2 1 3 6 6 6 5 4 2 2 4 2 6 4 1 3
+    ##  [38] 2 4 1 4 6 6 2 3 3 6 1 3 4 3 4 6 3 6 1 1 3 6 2 3 3 1 5 4 4 5 1 6 5 6 6 4 5
+    ##  [75] 6 6 6 5 2 2 3 1 4 6 4 4 4 3 3 2 2 1 6 3 4 3 2 5 3 3
 
 ``` r
 #get the sum of the rolls
 sum(rolldie(100))
 ```
 
-    ## [1] 344
+    ## [1] 348
 
 ``` r
 #for loop to roll the die 10000 times
@@ -268,9 +271,9 @@ for (i in 1:10000) {
 sums[1:40]
 ```
 
-    ##  [1] 346 367 330 348 369 332 391 336 364 323 344 318 365 346 353 345 331 370 321
-    ## [20] 372 349 341 331 331 343 339 343 371 358 382 328 341 340 358 347 364 317 368
-    ## [39] 331 354
+    ##  [1] 368 346 346 354 356 338 362 344 379 363 356 355 361 344 345 389 341 337 340
+    ## [20] 340 371 345 334 359 309 347 334 368 311 326 316 354 368 359 338 354 339 327
+    ## [39] 345 364
 
 ``` r
 #making a histogram of the sums of the 1000 rolls
@@ -284,13 +287,13 @@ hist(sums, breaks = 100)
 sums[sums < 300]
 ```
 
-    ##  [1] 295 297 297 297 298 299 291 296 299 297 294 294 296 293 296 297 299
+    ##  [1] 297 296 298 299 295 296 297 298 299 296 294 298 298 294
 
 ``` r
 length(sums[sums < 300])
 ```
 
-    ## [1] 17
+    ## [1] 14
 
 ``` r
 17/10000
@@ -303,13 +306,13 @@ length(sums[sums < 300])
 sums[sums > 400]
 ```
 
-    ## [1] 406 402 404 404 405 403 403
+    ##  [1] 406 403 406 401 413 405 408 401 401 413 402 403 406 401 405
 
 ``` r
 length(sums[sums > 400])
 ```
 
-    ## [1] 7
+    ## [1] 15
 
 ``` r
 14/10000
